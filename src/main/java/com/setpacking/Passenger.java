@@ -14,4 +14,8 @@ public class Passenger {
         return id;
     }
 
+    public boolean getWindowPref() {
+        return windowPref;
+    }
+
 }

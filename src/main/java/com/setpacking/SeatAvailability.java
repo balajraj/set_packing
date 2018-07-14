@@ -3,9 +3,12 @@ package com.setpacking;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SeatAvailability {
+public class  SeatAvailability {
 
+    private final Logger logger = LoggerFactory.getLogger(SeatAvailability.class);
     private int capacity =0;
     private int rowSize=0;
     int currAvailability = 0;
@@ -30,9 +33,18 @@ public class SeatAvailability {
       return rowSize - freey;
     }
 
-    public void updateSeats(List<Passenger> passengers,int size) {
+    public List<Integer> updateSeats(List<Passenger> passengers,int size,boolean windowPref, int prefId) throws FullFillException{
         List<Integer>  passengersPerRow = new ArrayList<Integer>();
         int passPerRow = 0;
+        if( windowPref ) {
+            if (seats[freex][0] == -1 ) {
+               seats[freex][0]  = prefId;
+            }
+            else if( seats[freex][rowSize-1] == -1 ) {
+                seats[freex][rowSize-1] = prefId;
+            }
+            size -= 1;
+        }
         for ( int i=freey ; i < size; ++i ) {
             while( seats[freex][freey] != -1 ) {
                 freey++;
@@ -43,40 +55,28 @@ public class SeatAvailability {
             if(freey == rowSize-1) {
                 freey=0;
                 freex++;
+                passengersPerRow.add(passPerRow);
                 passPerRow =0;
+                if(freex == numRows -1 && (size-1-i) >0  ) {
+                    logger.error("Reached the end of the seats ");
+                    throw new FullFillException();
+                }
             }
-            if(freex == numRows -1) {
 
-            }
         }
+        return passengersPerRow;
     }
 
 
 
-    public void fillGroup(Group grp, boolean windowPref) {
+    public void fillGroup(Group grp, boolean windowPref) throws FullFillException {
         List<Passenger> passengers = grp.getPassengers();
+
         if(windowPref) {
 
-                int size = passengers.size();
-                if( passengers.size() <= rowSize ) {
-                   updateLessThanRow(size,passengers);
-                }
-                else {
+                Passenger winPref = grp.getWindowPassenger();
 
-                    while(size != 0 && (freex < numRows ) ) //size of passengers in group is greater than rowSize
-                    {
-                        if (size > rowSize) {
-                            updateSeats(passengers,rowSize);
-                            size = size - rowSize;
-                            freex++;
-                        }
-                        else if( size <= rowSize) {
-                            size = updateLessThanRow(size,passengers);
-                        }
-
-                    }
-                    unSatisfied = size;
-                }
+                List<Integer> rowsAssigned = updateSeats(passengers,grp.getSize(),true,winPref.getId());
 
         }
         else {
