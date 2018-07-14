@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 public class  SeatAvailability {
 
     private final Logger logger = LoggerFactory.getLogger(SeatAvailability.class);
-    private int capacity =0;
+
     private int rowSize=0;
     int currAvailability = 0;
     int [][] seats = null;
@@ -19,8 +19,8 @@ public class  SeatAvailability {
     int [] costForRow =null;
     int unSatisfied = 0;
 
-    public SeatAvailability(int capacity, int rowSize, int numRows) {
-        this.capacity = capacity;
+    public SeatAvailability( int rowSize, int numRows) {
+
         this.rowSize = rowSize;
         this.numRows = numRows;
         seats = new int[numRows][rowSize];
@@ -71,16 +71,27 @@ public class  SeatAvailability {
 
     public void fillGroup(Group grp, boolean windowPref) throws FullFillException {
         List<Passenger> passengers = grp.getPassengers();
-
+        List<Integer> assignment =null;
         if(windowPref) {
 
                 Passenger winPref = grp.getWindowPassenger();
 
-                List<Integer> rowsAssigned = updateSeats(passengers,grp.getSize(),true,winPref.getId());
+                assignment = updateSeats(passengers,grp.getSize(),true,winPref.getId());
 
         }
         else {
+            assignment = updateSeats(passengers,grp.getSize(),false,-1);
 
+
+        }
+        if(assignment.size() > 1) {
+            //The passengers are distributed more than one row.
+            double groupSatisfaction = assignment.stream().mapToDouble(
+                    x -> (double)x/(double)grp.getSize() ).average().orElse(0.0D);
+            grp.setSatisfaction(groupSatisfaction);
+        }
+        else {
+            grp.setSatisfaction(1.0D);
         }
 
     }

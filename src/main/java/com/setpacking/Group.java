@@ -8,6 +8,7 @@ public class Group {
     boolean hasWindowPref;
     List<Passenger> passengers=null;
     Passenger winPref;
+    double satisfaction = 0.0D; //satisfaction 100 %
     public Group(List<Passenger> passengers, boolean hasWindowPref) {
         this.hasWindowPref = hasWindowPref;
         this.passengers = passengers;
@@ -32,5 +33,14 @@ public class Group {
     public Passenger getWindowPassenger() {
         return winPref;
     }
+
+    public void setSatisfaction(double satisfaction) {
+        this.satisfaction = satisfaction;
+    }
+
+    public double getSatisfaction() {
+        return satisfaction;
+    }
+
 
 }
