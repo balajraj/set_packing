@@ -11,13 +11,11 @@ public class  SeatAvailability {
     private final Logger logger = LoggerFactory.getLogger(SeatAvailability.class);
 
     private int rowSize=0;
-    int currAvailability = 0;
+
     int [][] seats = null;
     int freex=0;
     int freey=0;
     int numRows =0;
-    int [] costForRow =null;
-    int unSatisfied = 0;
 
     public SeatAvailability( int rowSize, int numRows) {
 
@@ -33,7 +31,45 @@ public class  SeatAvailability {
       return rowSize - freey;
     }
 
-    public List<Integer> updateSeats(List<Passenger> passengers,int size,boolean windowPref, int prefId) throws FullFillException{
+    /**
+     * Searches for the next available seat
+     * @return true if next row is reached false if seat found on same row
+     * @throws FullFillException
+     */
+    public boolean searchForNextFree() throws FullFillException{
+        boolean ret =false;
+        while( seats[freex][freey] != -1 ) {
+            if( freex == numRows-1 && freey == rowSize-1) {
+                throw new  FullFillException();
+            }
+            if(freey == rowSize -1) {
+                freey=0;
+                freex++;
+                ret =true;
+            }
+            else {
+                freey++;
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * If the passenger has request for window pref the person is
+     * assigned to either the start of the column or end of the column which is a window
+     * freex and freey keeps tracks of currently available free seat
+     * Depending on the group size and current available seats the passengers will
+     * occupy one or more rows.
+     * @param passengers who have to be filled
+     * @param size size of the group
+     * @param windowPref true if the group needs window pref
+     * @param prefId the passenger id who has requested for window pref
+     * @return list of integer no of passengers per row
+     * @throws FullFillException is thrown when there are less number of seats available than
+     * the list of passengers in the group.
+     */
+    public List<Integer> updateSeats(List<Passenger> passengers,int size,
+                                     boolean windowPref, int prefId) throws FullFillException{
         List<Integer>  passengersPerRow = new ArrayList<Integer>();
         int passPerRow = 0;
         if( windowPref ) {
@@ -43,27 +79,33 @@ public class  SeatAvailability {
             else if( seats[freex][rowSize-1] == -1 ) {
                 seats[freex][rowSize-1] = prefId;
             }
+            passPerRow++;
             size -= 1;
         }
         for ( int i=freey ; i < size; ++i ) {
-            while( seats[freex][freey] != -1 ) {
-                freey++;
+            boolean nextRow = searchForNextFree();
+            if(nextRow) {
+                passengersPerRow.add(passPerRow);
+                passPerRow =0;
             }
             seats[freex][freey] = passengers.get(i).getId();
-            freey++;
             passPerRow++;
             if(freey == rowSize-1) {
                 freey=0;
                 freex++;
                 passengersPerRow.add(passPerRow);
                 passPerRow =0;
-                if(freex == numRows -1 && (size-1-i) >0  ) {
+                if(freex >= numRows -1 || (size-1-i) >0  ) {
                     logger.error("Reached the end of the seats ");
                     throw new FullFillException();
                 }
             }
+            else {
+                freey++;
+            }
 
         }
+        passengersPerRow.add(passPerRow);
         return passengersPerRow;
     }
 
@@ -73,16 +115,11 @@ public class  SeatAvailability {
         List<Passenger> passengers = grp.getPassengers();
         List<Integer> assignment =null;
         if(windowPref) {
-
                 Passenger winPref = grp.getWindowPassenger();
-
                 assignment = updateSeats(passengers,grp.getSize(),true,winPref.getId());
-
         }
         else {
             assignment = updateSeats(passengers,grp.getSize(),false,-1);
-
-
         }
         if(assignment.size() > 1) {
             //The passengers are distributed more than one row.
