@@ -6,7 +6,7 @@
   - Keep the group of passengers in a single row. 
 
 
-# Assumptions 
+### Assumptions 
 Here some of the assumptions have been made while coding this solution. The assumptions help to give the code simple, though the design of the code is such if the conditions has to be relaxed in future, the code can be easily modified to satisfy additional functionality. 
   - There is only one passenger requests for window in a given group. 
   - The max numbner of passengers in a group is equal to maximum number of seats in a row. 
