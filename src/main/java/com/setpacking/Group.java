@@ -9,6 +9,11 @@ public class Group {
     Passenger winPref;
     double satisfaction = 0.0D; //satisfaction 0 %
 
+    /**
+     * If a window perferce passenger is present he/she is removed from the list
+     * of passengers and made available through getWindowPassenger method for easier lookup.
+     * @param passengers
+     */
     public Group(List<Passenger> passengers) {
         this.passengers = passengers;
         this.size = passengers.size();

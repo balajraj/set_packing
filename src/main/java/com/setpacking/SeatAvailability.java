@@ -94,6 +94,27 @@ public class  SeatAvailability {
         return passPerRow;
     }
 
+    private void assignNormalSeats(int size,List<Integer> passengersPerRow,int passPerRow,
+                                   List<Passenger> passengers) throws FullFillException{
+        int i=0;
+        while ( i < size ) {
+            boolean nextRow = searchForNextFree();
+            if(nextRow) {
+                passengersPerRow.add(passPerRow);
+                passPerRow =0;
+            }
+            seats[freex][freey] = passengers.get(i).getId();
+            passPerRow++;
+            if(freey == rowSize-1) { //last column/row check
+                passPerRow = lastColRowAssignment(passengersPerRow,size,i,passPerRow);
+            }
+            else {
+                freey++;
+            }
+            i++;
+        }
+    }
+
     /**
      * If the passenger has request for window pref the person is
      * assigned to either the start of the column or end of the column which is a window
@@ -117,23 +138,7 @@ public class  SeatAvailability {
             size = assignWindowSeat(prefId,size);
             passPerRow++;
         }
-        int i=0;
-        while ( i < size ) {
-            boolean nextRow = searchForNextFree();
-            if(nextRow) {
-                passengersPerRow.add(passPerRow);
-                passPerRow =0;
-            }
-            seats[freex][freey] = passengers.get(i).getId();
-            passPerRow++;
-            if(freey == rowSize-1) { //last column/row check
-                passPerRow = lastColRowAssignment(passengersPerRow,size,i,passPerRow);
-            }
-            else {
-                freey++;
-            }
-            i++;
-        }
+        assignNormalSeats(size,passengersPerRow,passPerRow,passengers);
         if(passPerRow != 0 ) {
             passengersPerRow.add(passPerRow);
         }

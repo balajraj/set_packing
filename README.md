@@ -13,9 +13,11 @@ Here some of the assumptions have been made while coding this solution. The assu
 
 ### Design and responsibility of modules
 
-> SeatAvailability is mainly responsile for assigning passengers to a given seat while satifying the constraints. 
+ One of design thought was not to allow gaps in the seat allocation to keep the coding simple. Hence the groups are assignment contigously, this aspect of the design can be further improved to achieve at much better customer satisfaction ratio, if group passengers are assigned to more than one row. 
 
-> SetPackingAlgo class is mainly responsible for searching the given group and picking right group so satisfaction of overal group is mainted.  syntax is to make it as readable
+> SeatAvailability is mainly responsile for assigning passengers to a given seat while satifying the constraints. The updateSeats method will first try to assign the passengers with window seat perference to window seat. It keeps tracks of seats that free and seats already occupied. The output is list of integer, for a given group, each integer is number of passengers of group in given row, if the passengers in a group are assigned to more than one row the satisfaction goes below 100%. Also if there are less no of seats available than the list of passengers in the group an exception is thrown. There are unit test cases to verify the above scenarios. 
+
+> SetPackingAlgo class is mainly responsible for searching the given group and picking right group so satisfaction of overal group is maintained. The seatAvailibity class provide api to get number of seats available in a given row. Based on number of seats available a window prefrence or non preference group is chosen and algorithm of seat allocation is carried out. 
 
 ### Installation
 
@@ -33,7 +35,7 @@ $ cat src/main/resources/input.txt | java -jar target/seat_alloc-1.0-SNAPSHOT-ja
 
 #### References 
 
-[[1] Using set packing Formulation for airline seat allocation
+[[1] Using set packing formulation for airline seat allocation
 ](http://www.orsj.or.jp/~archive/pdf/e_mag/Vol.42_01_032.pdf)
 
 

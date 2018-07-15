@@ -27,14 +27,10 @@ public class InputDriver {
                        windowPerf =true;
                        int len = elem.length()-1;
                        String digit =elem.substring(0,len);
-                       Integer id = Integer.parseInt(digit);
-                       Passenger p = new Passenger(windowPerf,id);
-                       passengers.add(p);
+                       addPassengers(digit,passengers,windowPerf);
                    }
                    else {
-                       Integer id = Integer.parseInt(elem);
-                       Passenger p = new Passenger(false,id);
-                       passengers.add(p);
+                       addPassengers(elem,passengers,false);
                    }
                }
                Group grp = new Group(passengers);
@@ -51,6 +47,12 @@ public class InputDriver {
        setpack.printAssignment();
        System.out.println((int)satisfaction * 100+"%");
 
+   }
+
+   public static void addPassengers(String elem,List<Passenger> passengers, boolean winPref) {
+       Integer id = Integer.parseInt(elem);
+       Passenger p = new Passenger(winPref,id);
+       passengers.add(p);
    }
 
    public static void addElementsToMap(Map<Integer,Stack<Group>> prefGrp,Group newGroup) {

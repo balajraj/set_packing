@@ -27,9 +27,17 @@ public class SetPackingAlgo {
         return filledList.stream().mapToDouble(Group::getSatisfaction).average().orElse(0.0D);
     }
 
+    /**
+     * Will loop up the group that will be best suited for available seats in a row.
+     * The reason to use stack data structure instead of list is it makes removing elements easier.
+     * When stack element size becomes zero the entry is removed from the map as well.
+     * @param availCount the key to be looked in the map
+     * @param allocGrp map which maintains the groups of same size
+     * @param winPref whether the group has window preference or not
+     * @param result list of groups with satisfaction updated
+     */
     public void tryAndFillSeats(int availCount, Map<Integer, Stack<Group>> allocGrp, boolean winPref,
                                 List<Group> result) {
-
         Stack<Group> listGrp = allocGrp.get(availCount);
         if (listGrp.size() > 0) {
             Group grp = listGrp.pop();
@@ -51,6 +59,14 @@ public class SetPackingAlgo {
         seatAlloc.printAssignment();
     }
 
+    /**
+     * The method will first try to look up the group which has same passengers equal to available seats
+     * in the given row. If the each match is not found, then a search is made to find the next possible match
+     * in the range [freeSeatsInRow-1,1]
+     * @param prefGrp map which contains groups belonging to same size
+     * @param winPref whether window preference is required or not
+     * @param result list of groups with satisfaction updated
+     */
     private void allocateForPrefAndNonPref(Map<Integer, Stack<Group>> prefGrp, boolean winPref, List<Group> result) {
 
         while (prefGrp.size() > 0) {
