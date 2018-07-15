@@ -5,12 +5,13 @@ import java.util.List;
 public class Group {
 
     int size;
-    boolean hasWindowPref;
+    //boolean hasWindowPref;
     List<Passenger> passengers=null;
     Passenger winPref;
-    double satisfaction = 0.0D; //satisfaction 100 %
-    public Group(List<Passenger> passengers, boolean hasWindowPref) {
-        this.hasWindowPref = hasWindowPref;
+    double satisfaction = 0.0D; //satisfaction 0 %
+
+    public Group(List<Passenger> passengers) {
+        //this.hasWindowPref = hasWindowPref;
         this.passengers = passengers;
         this.size = passengers.size();
         for(Passenger pass: passengers) {

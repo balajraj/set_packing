@@ -12,6 +12,7 @@ public class TestSeatAvailabilty {
     private SeatAvailability seatAvail = null;
     private List<Passenger> passengers =null;
     private List<Passenger> passengers1= null;
+    private Group grp1 = null;
     @Before
     public void setUp() {
         seatAvail = new SeatAvailability(3,3);
@@ -21,6 +22,7 @@ public class TestSeatAvailabilty {
             add(new Passenger( false,3));
             add(new Passenger( false,4));
         }};
+        grp1 = new Group(passengers);
         passengers1 = new ArrayList<Passenger> () {{
             add( new Passenger(true,5));
             add(new Passenger( false,6));
@@ -53,6 +55,17 @@ public class TestSeatAvailabilty {
 
     }
 
+    /**
+     * The group of 4 has 3 passengers assinged to row1 and 1 passenger assigned to row2.
+     * Group Satisfaction = (3/4 + 1/4)/2 = 0.5
+     * @throws FullFillException
+     */
+    @Test
+    public void testPassengerSatisfaction() throws FullFillException {
+        seatAvail.fillGroup(grp1,true);
+        double expected = 0.5D;
+        assertEquals(grp1.getSatisfaction() ,expected,0.001 );
+    }
 
 
 }
