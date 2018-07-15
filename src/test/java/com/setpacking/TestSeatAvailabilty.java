@@ -10,9 +10,14 @@ import static org.junit.Assert.assertEquals;
 public class TestSeatAvailabilty {
 
     private SeatAvailability seatAvail = null;
+    private SeatAvailability seatAvail1 = null;
     private List<Passenger> passengers =null;
     private List<Passenger> passengers1= null;
+    private List<Passenger> passengers2= null;
+    private List<Passenger> passengers3= null;
     private Group grp1 = null;
+    private Group grp2 = null;
+    private Group grp3 = null;
     @Before
     public void setUp() {
         seatAvail = new SeatAvailability(3,3);
@@ -31,6 +36,17 @@ public class TestSeatAvailabilty {
             add(new Passenger( false,9));
             add(new Passenger( false,10));
         }};
+        seatAvail1 = new SeatAvailability(4,4);
+        passengers2 = new ArrayList<Passenger>() {{
+                add(new Passenger(true, 1));
+                add(new Passenger(false, 2));
+                add(new Passenger(false, 3));
+        }};
+        grp2 = new Group(passengers2);
+        passengers3 = new ArrayList<Passenger>() {{
+                add(new Passenger(true, 4));
+        }};
+        grp3 = new Group(passengers3);
 
     }
 
@@ -65,6 +81,16 @@ public class TestSeatAvailabilty {
         seatAvail.fillGroup(grp1,true);
         double expected = 0.5D;
         assertEquals(grp1.getSatisfaction() ,expected,0.001 );
+    }
+
+    @Test
+    public void testGetFreeRowCount() throws FullFillException{
+        assertEquals(seatAvail1.getFreeSeatsInRow(),4);
+        seatAvail1.fillGroup(grp2,true);
+        assertEquals(seatAvail1.getFreeSeatsInRow(),1);
+        seatAvail1.fillGroup(grp3,true);
+        assertEquals(seatAvail1.getFreeSeatsInRow(),4);
+
     }
 
 

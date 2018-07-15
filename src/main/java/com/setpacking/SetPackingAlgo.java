@@ -57,16 +57,21 @@ public class SetPackingAlgo {
                 tryAndFillSeats(freeSeatsInRow,prefGrp,winPref,result);
             }
             else {
-                //int index =-1;
-                for( int i = freeSeatsInRow; i > 0 ; --i ) {
+                int index = -1;
+                for( int i = freeSeatsInRow-1; i > 0 ; --i ) {
                     if(prefGrp.containsKey(i) ) {
-                        tryAndFillSeats(i,prefGrp,winPref,result);
+                        index = i;
+                        break;
+
                     }
                 }
-
-                 for(int i=rowSize+1; i <= maxGroupSize;++i) {
+                if(index != - 1){
+                    tryAndFillSeats(index,prefGrp,winPref,result);
+                }
+                 /*
+                 for(int i=rowSize+1; i <= maxGroupSize;++i) { //fill in group whose size is greater than seat size
                         tryAndFillSeats(i,prefGrp,winPref,result);
-                 }
+                 }*/
             }
         }
     }
@@ -76,7 +81,7 @@ public class SetPackingAlgo {
 
         List<Group> result = new ArrayList<>();
         allocateForPrefAndNonPref(winPrefGrpMap,true,result);
-        allocateForPrefAndNonPref(noPrefGrpMap,true,result);
+        allocateForPrefAndNonPref(noPrefGrpMap,false,result);
         double endRes = calculateSatisfaction(result);
         logger.info("Overall satisfaction of set packing algorithm is "+endRes);
 

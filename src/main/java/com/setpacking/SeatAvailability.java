@@ -61,6 +61,12 @@ public class  SeatAvailability {
             }
             else if( seats[freex][rowSize-1] == -1 ) {
                 seats[freex][rowSize-1] = preId;
+                if(size ==1) {
+                    if(freey == (rowSize-1) ) {
+                        freey=0;
+                        freex +=1;
+                    }
+                }
             }
             size -= 1;
             return size;
