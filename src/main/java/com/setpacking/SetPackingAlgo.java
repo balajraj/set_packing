@@ -48,6 +48,9 @@ public class SetPackingAlgo {
         }
     }
 
+    public void printAssignment() {
+        seatAlloc.printAssignment();
+    }
 
     private void allocateForPrefAndNonPref(Map<Integer,Stack<Group>> prefGrp,boolean winPref ,List<Group> result) {
 
@@ -68,23 +71,17 @@ public class SetPackingAlgo {
                 if(index != - 1){
                     tryAndFillSeats(index,prefGrp,winPref,result);
                 }
-                 /*
-                 for(int i=rowSize+1; i <= maxGroupSize;++i) { //fill in group whose size is greater than seat size
-                        tryAndFillSeats(i,prefGrp,winPref,result);
-                 }*/
             }
         }
     }
 
     public double getAllocationSatisfaction(Map<Integer,Stack<Group>> winPrefGrpMap,
                                             Map<Integer,Stack<Group>> noPrefGrpMap) {
-
         List<Group> result = new ArrayList<>();
         allocateForPrefAndNonPref(winPrefGrpMap,true,result);
         allocateForPrefAndNonPref(noPrefGrpMap,false,result);
         double endRes = calculateSatisfaction(result);
         logger.info("Overall satisfaction of set packing algorithm is "+endRes);
-
         return endRes;
     }
 }

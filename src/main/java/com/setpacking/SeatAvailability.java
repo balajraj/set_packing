@@ -55,6 +55,15 @@ public class  SeatAvailability {
         return ret;
     }
 
+    public void printAssignment() {
+        for (int i =0 ; i < numRows;++i) {
+            for(int j=0; j < rowSize;j++ ) {
+                System.out.print(seats[i][j] +" ");
+            }
+            System.out.println(" ");
+        }
+    }
+
     public int assignWindowSeat(int preId,int size){
             if (seats[freex][0] == -1 ) {
                 seats[freex][0]  = preId;
@@ -108,7 +117,8 @@ public class  SeatAvailability {
             size = assignWindowSeat(prefId,size);
             passPerRow++;
         }
-        for ( int i=freey ; i < size; ++i ) {
+        int i=0;
+        while ( i < size ) {
             boolean nextRow = searchForNextFree();
             if(nextRow) {
                 passengersPerRow.add(passPerRow);
@@ -122,9 +132,11 @@ public class  SeatAvailability {
             else {
                 freey++;
             }
-
+            i++;
         }
-        passengersPerRow.add(passPerRow);
+        if(passPerRow != 0 ) {
+            passengersPerRow.add(passPerRow);
+        }
         return passengersPerRow;
     }
 

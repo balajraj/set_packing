@@ -100,6 +100,7 @@ public class TestSetPackingAlgo {
        List<Group> result = new ArrayList<>();
        setpack.tryAndFillSeats(3,winPref,true,result);
        setpack.tryAndFillSeats(3,winPref,true,result);
+       setpack.tryAndFillSeats(1,winPref,true,result);
        int expected=0;
        assertEquals(expected,winPref.size());
     }
@@ -108,6 +109,7 @@ public class TestSetPackingAlgo {
     public void testSeatAlloc() {
         List<Group> result = new ArrayList<>();
         double satisfaction = setpack.getAllocationSatisfaction(winPref,noPref);
+        setpack.printAssignment();
         double expected=1.0D;
         assertEquals(expected,satisfaction,0.0001);
     }

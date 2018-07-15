@@ -15,9 +15,11 @@ public class TestSeatAvailabilty {
     private List<Passenger> passengers1= null;
     private List<Passenger> passengers2= null;
     private List<Passenger> passengers3= null;
+    private List<Passenger> passengers4= null;
     private Group grp1 = null;
     private Group grp2 = null;
     private Group grp3 = null;
+    private Group grp4 = null;
     @Before
     public void setUp() {
         seatAvail = new SeatAvailability(3,3);
@@ -47,6 +49,11 @@ public class TestSeatAvailabilty {
                 add(new Passenger(true, 4));
         }};
         grp3 = new Group(passengers3);
+
+        passengers4 = new ArrayList<Passenger>() {{
+            add(new Passenger(false, 5));
+        }};
+        grp4 = new Group(passengers4);
 
     }
 
@@ -91,6 +98,14 @@ public class TestSeatAvailabilty {
         seatAvail1.fillGroup(grp3,true);
         assertEquals(seatAvail1.getFreeSeatsInRow(),4);
 
+    }
+
+    @Test
+    public void testMixPrefAndNonPref() throws FullFillException {
+        seatAvail1.fillGroup(grp2,true);
+        assertEquals(seatAvail1.getFreeSeatsInRow(),1);
+        seatAvail1.fillGroup(grp4,false);
+        assertEquals(seatAvail1.getFreeSeatsInRow(),4);
     }
 
 
