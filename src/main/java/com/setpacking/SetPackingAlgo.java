@@ -2,7 +2,6 @@ package com.setpacking;
 
 
 import java.util.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,11 +15,11 @@ public class SetPackingAlgo {
     private int numRows;
     private int maxGroupSize;
 
-    public SetPackingAlgo(int rowSize, int numRows,int maxGroupSize) {
-        this.rowSize=rowSize;
-        this.numRows =numRows;
+    public SetPackingAlgo(int rowSize, int numRows, int maxGroupSize) {
+        this.rowSize = rowSize;
+        this.numRows = numRows;
         this.maxGroupSize = maxGroupSize;
-        seatAlloc = new SeatAvailability(rowSize,numRows);
+        seatAlloc = new SeatAvailability(rowSize, numRows);
     }
 
 
@@ -28,11 +27,11 @@ public class SetPackingAlgo {
         return filledList.stream().mapToDouble(Group::getSatisfaction).average().orElse(0.0D);
     }
 
-    public void tryAndFillSeats(int availCount,Map<Integer,Stack<Group>> allocGrp,boolean winPref,
+    public void tryAndFillSeats(int availCount, Map<Integer, Stack<Group>> allocGrp, boolean winPref,
                                 List<Group> result) {
 
         Stack<Group> listGrp = allocGrp.get(availCount);
-        if(listGrp.size() > 0 ) {
+        if (listGrp.size() > 0) {
             Group grp = listGrp.pop();
             try {
                 seatAlloc.fillGroup(grp, winPref);
@@ -52,36 +51,34 @@ public class SetPackingAlgo {
         seatAlloc.printAssignment();
     }
 
-    private void allocateForPrefAndNonPref(Map<Integer,Stack<Group>> prefGrp,boolean winPref ,List<Group> result) {
+    private void allocateForPrefAndNonPref(Map<Integer, Stack<Group>> prefGrp, boolean winPref, List<Group> result) {
 
-        while(prefGrp.size() > 0 ) {
+        while (prefGrp.size() > 0) {
             int freeSeatsInRow = seatAlloc.getFreeSeatsInRow();
-            if(prefGrp.containsKey(freeSeatsInRow)) {
-                tryAndFillSeats(freeSeatsInRow,prefGrp,winPref,result);
-            }
-            else {
+            if (prefGrp.containsKey(freeSeatsInRow)) {
+                tryAndFillSeats(freeSeatsInRow, prefGrp, winPref, result);
+            } else {
                 int index = -1;
-                for( int i = freeSeatsInRow-1; i > 0 ; --i ) {
-                    if(prefGrp.containsKey(i) ) {
+                for (int i = freeSeatsInRow - 1; i > 0; --i) {
+                    if (prefGrp.containsKey(i)) {
                         index = i;
                         break;
-
                     }
                 }
-                if(index != - 1){
-                    tryAndFillSeats(index,prefGrp,winPref,result);
+                if (index != -1) {
+                    tryAndFillSeats(index, prefGrp, winPref, result);
                 }
             }
         }
     }
 
-    public double getAllocationSatisfaction(Map<Integer,Stack<Group>> winPrefGrpMap,
-                                            Map<Integer,Stack<Group>> noPrefGrpMap) {
+    public double getAllocationSatisfaction(Map<Integer, Stack<Group>> winPrefGrpMap,
+                                            Map<Integer, Stack<Group>> noPrefGrpMap) {
         List<Group> result = new ArrayList<>();
-        allocateForPrefAndNonPref(winPrefGrpMap,true,result);
-        allocateForPrefAndNonPref(noPrefGrpMap,false,result);
+        allocateForPrefAndNonPref(winPrefGrpMap, true, result);
+        allocateForPrefAndNonPref(noPrefGrpMap, false, result);
         double endRes = calculateSatisfaction(result);
-        logger.info("Overall satisfaction of set packing algorithm is "+endRes);
+        logger.info("Overall satisfaction of set packing algorithm is " + endRes);
         return endRes;
     }
 }

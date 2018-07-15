@@ -12,7 +12,6 @@ public class InputDriver {
        int lineCnt=0;
        while( scan.hasNextLine() ) {
            String line = scan.nextLine();
-           //System.out.println(line);
            String [] groupInfo = line.split(" ");
            if (lineCnt == 0 ) {
                rowSize = Integer.parseInt(groupInfo[0]);
@@ -24,19 +23,10 @@ public class InputDriver {
                boolean windowPerf =false;
                for(int i=0; i < groupInfo.length; ++i) {
                    String elem = groupInfo[i];
-                   //System.out.println(elem+ " " + elem.length());
                    if(elem.charAt(elem.length()-1) == 'W') {
                        windowPerf =true;
                        int len = elem.length()-1;
-                       //System.out.println("inside w "+len);
-                       String digit ="";
-                       if(len == 0 ) {
-                           digit = ""+elem.charAt(0);
-                       }
-                       else {
-                           digit = elem.substring(0,len);
-                       }
-                       //System.out.println(digit);
+                       String digit =elem.substring(0,len);
                        Integer id = Integer.parseInt(digit);
                        Passenger p = new Passenger(windowPerf,id);
                        passengers.add(p);
@@ -60,7 +50,6 @@ public class InputDriver {
        double satisfaction = setpack.getAllocationSatisfaction(winGrpPref,noGrpPref);
        setpack.printAssignment();
        System.out.println((int)satisfaction * 100+"%");
-
 
    }
 
