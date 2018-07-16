@@ -4,6 +4,7 @@ public class Passenger {
 
     boolean windowPref;
     int id;
+    boolean noWindowAvailable=false;
 
     public Passenger(boolean windowPref, int id){
         this.id = id;
@@ -16,6 +17,14 @@ public class Passenger {
 
     public boolean getWindowPref() {
         return windowPref;
+    }
+
+    public void setNoWindowAvailable(boolean noWindowAvailable) {
+        this.noWindowAvailable = noWindowAvailable;
+    }
+
+    public boolean getNoWindowAvailable() {
+        return noWindowAvailable;
     }
 
 }

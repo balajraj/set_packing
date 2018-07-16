@@ -64,7 +64,7 @@ public class  SeatAvailability {
         }
     }
 
-    public int assignWindowSeat(int preId,int size){
+    public int assignWindowSeat(int preId,int size) throws NoWindowSeatException{
             if (seats[freex][0] == -1 ) {
                 seats[freex][0]  = preId;
             }
@@ -76,6 +76,9 @@ public class  SeatAvailability {
                         freex +=1;
                     }
                 }
+            }
+            else { //no window seat available
+                throw new NoWindowSeatException();
             }
             size -= 1;
             return size;
@@ -113,6 +116,9 @@ public class  SeatAvailability {
             }
             i++;
         }
+        if(passPerRow != 0 ) {
+            passengersPerRow.add(passPerRow);
+        }
     }
 
     /**
@@ -125,23 +131,27 @@ public class  SeatAvailability {
      * @param passengers who have to be filled
      * @param size size of the group
      * @param windowPref true if the group needs window pref
-     * @param prefId the passenger id who has requested for window pref
+     * @param prefPass the passenger  who has requested for window pref
      * @return list of integer no of passengers per row
      * @throws FullFillException is thrown when there are less number of seats available than
      * the list of passengers in the group.
      */
     public List<Integer> updateSeats(List<Passenger> passengers,int size,
-                                     boolean windowPref, int prefId) throws FullFillException{
+                                     boolean windowPref, Passenger prefPass) throws FullFillException{
         List<Integer>  passengersPerRow = new ArrayList<>();
         int passPerRow = 0;
         if( windowPref ) {
-            size = assignWindowSeat(prefId,size);
-            passPerRow++;
+            try {
+                size = assignWindowSeat(prefPass.getId(), size);
+                passPerRow++;
+            }
+            catch(NoWindowSeatException ex) { //no window avail the passenger will get normal seat
+                prefPass.setNoWindowAvailable(true);
+                passengers.add(prefPass);
+            }
         }
         assignNormalSeats(size,passengersPerRow,passPerRow,passengers);
-        if(passPerRow != 0 ) {
-            passengersPerRow.add(passPerRow);
-        }
+
         return passengersPerRow;
     }
 
@@ -156,12 +166,13 @@ public class  SeatAvailability {
     public void fillGroup(Group grp, boolean windowPref) throws FullFillException {
         List<Passenger> passengers = grp.getPassengers();
         List<Integer> assignment ;
+        Passenger winPref =null;
         if(windowPref) {
-                Passenger winPref = grp.getWindowPassenger();
-                assignment = updateSeats(passengers,grp.getSize(),true,winPref.getId());
+                winPref = grp.getWindowPassenger();
+                assignment = updateSeats(passengers,grp.getSize(),true,winPref);
         }
         else {
-            assignment = updateSeats(passengers,grp.getSize(),false,-1);
+            assignment = updateSeats(passengers,grp.getSize(),false,null);
         }
         if(assignment.size() > 1) {
             //The passengers are distributed more than one row. The satisfaction will be less than 100 %
@@ -170,7 +181,19 @@ public class  SeatAvailability {
             grp.setSatisfaction(groupSatisfaction);
         }
         else {
-            grp.setSatisfaction(1.0D);
+            if(windowPref) {
+               if(winPref.getNoWindowAvailable() ) {
+                   double satis = (double)(grp.getSize()-1)/(double) grp.getSize();
+                   grp.setSatisfaction(satis);
+               }
+               else {
+                   grp.setSatisfaction(1.0D);
+               }
+            }
+            else {
+                grp.setSatisfaction(1.0D);
+            }
+
         }
 
     }

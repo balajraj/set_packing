@@ -11,15 +11,23 @@ public class TestSeatAvailabilty {
 
     private SeatAvailability seatAvail = null;
     private SeatAvailability seatAvail1 = null;
+    private SeatAvailability seatAvail2 = null;
     private List<Passenger> passengers =null;
     private List<Passenger> passengers1= null;
     private List<Passenger> passengers2= null;
     private List<Passenger> passengers3= null;
     private List<Passenger> passengers4= null;
+    private List<Passenger> passengers5= null;
+    private List<Passenger> passengers6= null;
+    private List<Passenger> passengers7= null;
     private Group grp1 = null;
     private Group grp2 = null;
     private Group grp3 = null;
     private Group grp4 = null;
+    private Group grp5 = null;
+    private Group grp6 = null;
+    private Group grp7 = null;
+
     @Before
     public void setUp() {
         seatAvail = new SeatAvailability(3,3);
@@ -55,6 +63,20 @@ public class TestSeatAvailabilty {
         }};
         grp4 = new Group(passengers4);
 
+        seatAvail2 = new SeatAvailability(3,1);
+        passengers5 = new ArrayList<Passenger>() {{
+                add(new Passenger(true, 1));
+        }};
+        passengers6 = new ArrayList<Passenger>() {{
+                add(new Passenger(true, 2));
+        }};
+        passengers7 = new ArrayList<Passenger>() {{
+                add(new Passenger(true, 3));
+        }};
+        grp5 = new Group(passengers5);
+        grp6 = new Group(passengers6);
+        grp7 = new Group(passengers7);
+
     }
 
     @Test
@@ -66,15 +88,15 @@ public class TestSeatAvailabilty {
     @Test
     public void testWindowPrefAssignment() throws Exception {
 
-        List<Integer> numRows = seatAvail.updateSeats(passengers,4,true,1);
+        List<Integer> numRows = seatAvail.updateSeats(passengers,4,true,passengers.get(0));
         assertEquals(numRows.get(0),new Integer(3));
         assertEquals(numRows.get(1),new Integer(1));
     }
 
     @Test(expected = FullFillException.class)
     public void testIndexOutOfBoundsException() throws FullFillException {
-        List<Integer> numRows = seatAvail.updateSeats(passengers,4,true,1);
-        numRows = seatAvail.updateSeats(passengers1,6,true,5);
+        List<Integer> numRows = seatAvail.updateSeats(passengers,4,true,passengers.get(0));
+        numRows = seatAvail.updateSeats(passengers1,6,true,passengers1.get(0));
 
     }
 
@@ -106,6 +128,16 @@ public class TestSeatAvailabilty {
         assertEquals(seatAvail1.getFreeSeatsInRow(),1);
         seatAvail1.fillGroup(grp4,false);
         assertEquals(seatAvail1.getFreeSeatsInRow(),4);
+    }
+
+    @Test
+    public void testNoWindowAvailable() throws FullFillException{
+       seatAvail2.fillGroup(grp5,true);
+       assertEquals(grp5.getSatisfaction(),1.0D,0.0001);
+       seatAvail2.fillGroup(grp6,true);
+       assertEquals(grp6.getSatisfaction(), 1.0D, 0.0001);
+       seatAvail2.fillGroup(grp7,true);
+       assertEquals(grp7.getSatisfaction(), 0.0D, 0.0001);
     }
 
 
