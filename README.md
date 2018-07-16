@@ -1,10 +1,10 @@
 # Airline Seat Allocation 
 
- Seat allocation for given a set of passengers is an optimization problem that is normally faced by airlines. The problem belongs to category of set packing problem. The set packing problem in computer science is NP complete, meaning there are no known polynomial runtime algorithm available [1]. In the reference paper researchers at IBM have tried to solve the same problem using set packing approach. So a similar approach has been followed in the current code for seat allocation. Two important constraints that have been used to solve the set packing problem to ensure the overall passenger satisfaction increases and it is achieved by,  
+ Seat allocation for given a set of passengers is an optimization problem that is normally faced by airlines. The problem belongs to category of set packing problem. The set packing problem in computer science is NP complete, meaning there are no known polynomial runtime algorithm available [1]. In the reference paper researchers at IBM have tried to solve the same problem using set packing approach. It takes exponential time to find the optimal solution, here in this approach it was tried to achieve greater satisfaction based on some constraints, so the program can run in polynomial time. Important constraints that have been used to solve the set packing problem to ensure the overall passenger satisfaction increases and it is achieved by,  
 
   - Assign the window preference passengers first. 
   - Keeping the group of passengers in a single row. 
-
+  - Not allow gaps in seat allocation.
 
 ### Assumptions 
 Here are some of the assumptions have been made while coding this solution. The assumptions help to keep the code simple, though the design of the code is such if the conditions has to be meet in future, the code can be easily modified to satisfy additional required functionality. 
@@ -13,7 +13,7 @@ Here are some of the assumptions have been made while coding this solution. The 
 
 ### Design and responsibility of modules
 
- One of design thought was not to allow gaps in the seat allocation to keep the solution simple. Hence the groups are assigned continously wihout creating gaps in a row. This aspect of the design can be further improved to achieve a much better customer satisfaction percentage. In the below section we discuss about two core modules which implements  the algorithm. 
+ One of constraints was not to allow gaps in the seat allocation to keep the solution simple. Hence the groups are assigned continously wihout creating gaps in a row. This aspect of the design can be further improved to achieve a much better customer satisfaction percentage. In the below section we discuss about two core modules which implements  the algorithm. 
 
 > SeatAvailability is mainly responsile for assigning passengers to a given seat while satifying the constraints. The updateSeats method will first try to assign the passengers with window seat perference to window seat. It keeps tracks of seats that are free and seats already occupied. The output is list of integer, for a given group, each integer is number of passengers of group in given row, if the passengers in a group are assigned to more than one row the satisfaction goes below 100%. Also if there are less no of seats available than the list of passengers in the group an exception is thrown. If a window preference passenger cannot be assigned a window then that passenger satisfaction becomes zero and he/she will be assigned a seat like a normal passenger.There are unit test cases to verify the above scenarios. 
 
