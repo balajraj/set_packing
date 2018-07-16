@@ -64,6 +64,16 @@ public class  SeatAvailability {
         }
     }
 
+    /**
+     * The windows will be tried to assinged to window pref passengers, if no
+     * window is found the passenger will continue as normal passenger. The window
+     * is not searched in the next row, the current approach is to not to have
+     * gaps in seat assignment.
+     * @param preId id of window passenger
+     * @param size number of persons in group
+     * @return current size of group after assignment
+     * @throws NoWindowSeatException no window available to assign the exception is thrown
+     */
     public int assignWindowSeat(int preId,int size) throws NoWindowSeatException{
             if (seats[freex][0] == -1 ) {
                 seats[freex][0]  = preId;
